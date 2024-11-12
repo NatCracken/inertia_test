@@ -1,28 +1,65 @@
-[gd_scene load_steps=4 format=3 uid="uid://bg68vomi3m5vx"]
+[gd_scene load_steps=8 format=3 uid="uid://bg68vomi3m5vx"]
 
 [ext_resource type="Script" path="res://print_inertia.gd" id="1_uhqqe"]
 [ext_resource type="Shape3D" uid="uid://b3u7en6ihdgg7" path="res://king_stallion_shape.tres" id="2_xflna"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_l0t5t"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_1qsvt"]
+sky_material = SubResource("ProceduralSkyMaterial_l0t5t")
+
+[sub_resource type="Environment" id="Environment_b61n0"]
+background_mode = 2
+sky = SubResource("Sky_1qsvt")
+tonemap_mode = 2
+glow_enabled = true
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_os6hy"]
 radius = 1.0
 height = 10.0
 
+[sub_resource type="BoxMesh" id="BoxMesh_05yrd"]
+size = Vector3(2, 2, 2)
+
 [node name="Node" type="Node"]
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_b61n0")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
 [node name="CapsuleBody" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.88433, 0, 0)
 mass = 5.0
 gravity_scale = 0.0
 inertia = Vector3(100, 100, 100)
+constant_torque = Vector3(20, 20, 20)
 script = ExtResource("1_uhqqe")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CapsuleBody"]
 shape = SubResource("CapsuleShape3D_os6hy")
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CapsuleBody"]
+mesh = SubResource("BoxMesh_05yrd")
+
 [node name="CustomBody" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.01768, 0, 0)
 mass = 5.0
 gravity_scale = 0.0
 inertia = Vector3(100, 100, 100)
+constant_torque = Vector3(20, 20, 20)
 script = ExtResource("1_uhqqe")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="CustomBody"]
 shape = ExtResource("2_xflna")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CustomBody"]
+mesh = SubResource("BoxMesh_05yrd")
+skeleton = NodePath("../CollisionShape3D")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.902447, 0.430801, 0, -0.430801, 0.902447, 0, 6.59075, 18.5727)
